@@ -1,0 +1,21 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-PE
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Consulta1"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Consulta1
+ref table DateTableTemplate_d862372f-1376-4817-b563-10133a9e9c73
+ref table LocalDateTable_000751c0-de02-4ac8-812a-2da155b7c886
+ref table LocalDateTable_e64556ab-a6a9-4ad0-8a28-db3bdba373b9
+
+ref cultureInfo es-ES
+

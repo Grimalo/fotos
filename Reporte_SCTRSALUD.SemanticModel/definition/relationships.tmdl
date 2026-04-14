@@ -1,0 +1,10 @@
+relationship 8498c928-146f-4f5f-b1f7-adc84f9aff2e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Consulta1.FechaRecepcion
+	toColumn: LocalDateTable_000751c0-de02-4ac8-812a-2da155b7c886.Date
+
+relationship 3558ea17-56a5-4c54-8652-51ab350abd33
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Consulta1.FechaUltimaRespuesta
+	toColumn: LocalDateTable_e64556ab-a6a9-4ad0-8a28-db3bdba373b9.Date
+

@@ -1,0 +1,318 @@
+table Consulta1
+	lineageTag: 4f9c83c5-db39-4eb0-960d-16bba3c9db36
+
+	column ConversationId
+		dataType: string
+		lineageTag: 34ac345a-dfde-41ae-b2a0-90360b32f523
+		summarizeBy: none
+		sourceColumn: ConversationId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ConversationId_Alt
+		dataType: string
+		lineageTag: 5ade73ec-ec9c-41c2-aa30-bc4ceed5585d
+		summarizeBy: none
+		sourceColumn: ConversationId_Alt
+
+		annotation SummarizationSetBy = Automatic
+
+	column CasoId
+		dataType: string
+		lineageTag: 19755ef8-82a2-4be2-8886-a5d59eae3d39
+		summarizeBy: none
+		sourceColumn: CasoId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Asunto
+		dataType: string
+		lineageTag: a37c858b-708b-4f9f-832e-63b7330e2051
+		summarizeBy: none
+		sourceColumn: Asunto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: d3d2160e-048d-4b38-b149-68a9c6366158
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaRecepcion
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 15be8837-59a1-4538-80a7-8e9907a91a7b
+		summarizeBy: none
+		sourceColumn: FechaRecepcion
+
+		variation Variación
+			isDefault
+			relationship: 8498c928-146f-4f5f-b1f7-adc84f9aff2e
+			defaultHierarchy: LocalDateTable_000751c0-de02-4ac8-812a-2da155b7c886.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FechaUltimaRespuesta
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: df874075-473e-46c3-bbae-a98b1ee81b95
+		summarizeBy: none
+		sourceColumn: FechaUltimaRespuesta
+
+		variation Variación
+			isDefault
+			relationship: 3558ea17-56a5-4c54-8652-51ab350abd33
+			defaultHierarchy: LocalDateTable_e64556ab-a6a9-4ad0-8a28-db3bdba373b9.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PersonaUltimaRespuesta
+		dataType: string
+		lineageTag: 2c34fb17-af61-4591-9817-a10586cd1acb
+		summarizeBy: none
+		sourceColumn: PersonaUltimaRespuesta
+
+		annotation SummarizationSetBy = Automatic
+
+	column Estado
+		dataType: string
+		lineageTag: 8e4a2242-3cec-49a6-8d23-20a1ef8c1211
+		summarizeBy: none
+		sourceColumn: Estado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observaciones
+		dataType: string
+		lineageTag: 3452d5aa-1be3-4b71-9b32-c4725e0a6544
+		summarizeBy: none
+		sourceColumn: Observaciones
+
+		annotation SummarizationSetBy = Automatic
+
+	column Encargado
+		dataType: string
+		lineageTag: d5dd43a4-1990-4dfa-94ef-23370f660e65
+		summarizeBy: none
+		sourceColumn: Encargado
+
+		annotation SummarizationSetBy = Automatic
+
+	column DoctorEncargado
+		dataType: string
+		lineageTag: 9041b7a5-35e0-45bc-a0e8-62c1830c5dff
+		summarizeBy: none
+		sourceColumn: DoctorEncargado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Días_Transcurridos
+		dataType: string
+		lineageTag: 6598f1fd-9d5f-4796-a9a8-fc8a7604c3fc
+		summarizeBy: none
+		sourceColumn: Días_Transcurridos
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha_Solic_Informe
+		dataType: string
+		lineageTag: 03c9e7ea-f94f-40b7-bccd-c053d4de28c8
+		summarizeBy: none
+		sourceColumn: Fecha_Solic_Informe
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha_Informe
+		dataType: string
+		lineageTag: 14b0d8ed-3e9b-4ce8-8cec-05786ffe54e7
+		summarizeBy: none
+		sourceColumn: Fecha_Informe
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha_Cierre
+		dataType: string
+		lineageTag: b9c5b02e-18b3-45ee-9441-3a66f903d2be
+		summarizeBy: none
+		sourceColumn: Fecha_Cierre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Doctor
+		dataType: string
+		lineageTag: 1e771dcb-85d3-4da2-8f10-85cffe1dd899
+		summarizeBy: none
+		sourceColumn: Doctor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Días_Trans_AM
+		dataType: string
+		lineageTag: e803e9a3-932a-437e-b33f-a95f550a56fb
+		summarizeBy: none
+		sourceColumn: Días_Trans_AM
+
+		annotation SummarizationSetBy = Automatic
+
+	column Días_Hab
+		dataType: string
+		lineageTag: f29a8a67-2e40-48a0-866c-3db1c090dbed
+		summarizeBy: none
+		sourceColumn: Días_Hab
+
+		annotation SummarizationSetBy = Automatic
+
+	column Plazo_max
+		dataType: double
+		lineageTag: c09b23ca-0c4e-40da-a06f-c402350b2227
+		summarizeBy: sum
+		sourceColumn: Plazo_max
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Plazo
+		dataType: string
+		lineageTag: c4da0876-cb4f-4185-b6c8-5a3472698304
+		summarizeBy: none
+		sourceColumn: Plazo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: a028f95b-70fc-4237-b455-fc2266cbf2b5
+		summarizeBy: none
+		sourceColumn: Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column EncargadoSCTR1
+		dataType: string
+		lineageTag: 7e72050e-c167-43b5-b44a-2440a06bcd67
+		summarizeBy: none
+		sourceColumn: EncargadoSCTR1
+
+		annotation SummarizationSetBy = Automatic
+
+	column EncargadoSCTR2
+		dataType: string
+		lineageTag: 0580b0b4-c427-4d0f-bcfe-07d9a9b11b2c
+		summarizeBy: none
+		sourceColumn: EncargadoSCTR2
+
+		annotation SummarizationSetBy = Automatic
+
+	column EsFinalizado
+		dataType: double
+		lineageTag: 63359f01-0fa5-4433-b0d9-53070779c6ef
+		summarizeBy: sum
+		sourceColumn: EsFinalizado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column EsPendiente
+		dataType: double
+		lineageTag: efa11ac9-5ffb-4d8c-a94a-b2d7c5607258
+		summarizeBy: sum
+		sourceColumn: EsPendiente
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DentroPlazo_Finalizado
+		dataType: double
+		lineageTag: 1b13a5aa-4ece-4549-aafb-529f091db1ec
+		summarizeBy: sum
+		sourceColumn: DentroPlazo_Finalizado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FueraPlazo_Finalizado
+		dataType: double
+		lineageTag: 889270d5-bcd8-481a-ac4e-ffe3e87f9af0
+		summarizeBy: sum
+		sourceColumn: FueraPlazo_Finalizado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PendienteFueraPlazo
+		dataType: double
+		lineageTag: 3181845f-fbbf-491c-86f0-5331c4b7f1cd
+		summarizeBy: sum
+		sourceColumn: PendienteFueraPlazo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column SolicitoInforme
+		dataType: double
+		lineageTag: 78b5ba85-4f73-4523-889a-d85cc2c7784b
+		summarizeBy: sum
+		sourceColumn: SolicitoInforme
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column InformeRecibido
+		dataType: double
+		lineageTag: cbe6dee5-7143-4668-b390-a2516fba1950
+		summarizeBy: sum
+		sourceColumn: InformeRecibido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PendienteDoctor
+		dataType: double
+		lineageTag: 2d76b988-cc33-4331-acf5-175597b652bd
+		summarizeBy: sum
+		sourceColumn: PendienteDoctor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DiasRespuestaDoctor
+		dataType: string
+		lineageTag: ad786c39-d0f1-446a-bda0-5661cd4cd38a
+		summarizeBy: none
+		sourceColumn: DiasRespuestaDoctor
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Consulta1 = m
+		mode: import
+		source =
+				let
+				    Origen = SharePoint.Files("https://mapfrecorp.sharepoint.com/sites/GO365SPOEECOMPUSGLTSPE-VIDADECESOSACCIDENTES", [ApiVersion = 15]),
+				    #"Filas filtradas" = Table.SelectRows(Origen, each [Folder Path] = "https://mapfrecorp.sharepoint.com/sites/GO365SPOEECOMPUSGLTSPE-VIDADECESOSACCIDENTES/Documentos compartidos/004 SCTR/SINIESTROS SCTR PENSION/SCTR SALUD/"),
+				    #"seguimiento_correos xlsx_https://mapfrecorp sharepoint com/sites/GO365SPOEECOMPUSGLTSPE-VIDADECESOSACCIDENTES/Documentos compartidos/004 SCTR/SINIESTROS SCTR PENSION/SCTR SALUD/" = #"Filas filtradas"{[Name="seguimiento_correos.xlsx",#"Folder Path"="https://mapfrecorp.sharepoint.com/sites/GO365SPOEECOMPUSGLTSPE-VIDADECESOSACCIDENTES/Documentos compartidos/004 SCTR/SINIESTROS SCTR PENSION/SCTR SALUD/"]}[Content],
+				    #"Libro de Excel importado" = Excel.Workbook(#"seguimiento_correos xlsx_https://mapfrecorp sharepoint com/sites/GO365SPOEECOMPUSGLTSPE-VIDADECESOSACCIDENTES/Documentos compartidos/004 SCTR/SINIESTROS SCTR PENSION/SCTR SALUD/"),
+				    SCTR_Salud_Table = #"Libro de Excel importado"{[Item="SCTR_Salud",Kind="Table"]}[Data],
+				    #"Tipo cambiado" = Table.TransformColumnTypes(SCTR_Salud_Table,{{"FechaRecepcion", type date}, {"FechaUltimaRespuesta", type date}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+
