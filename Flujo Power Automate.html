@@ -1,0 +1,756 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Flujos de Nueva solicitud</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+<style>
+/* Layout: banda roja con avance y selector de separador; índice de pasos fijo a la izquierda en escritorio; cada paso es una sección con figura, tabla de controles y fórmulas copiables. */
+:root{
+  --bg:#F4F4F4; --card:#FFFFFF; --fg:#211B1A; --muted:#625957; --line:#E1D9D7; --soft:#ECE7E6;
+  --red:#A31200; --red-ink:#FFFFFF; --red-soft:#F7E4E0; --ok:#1E7B4F; --ok-soft:#E1F2E9; --warn:#7A4F00; --warn-soft:#FBEFD6;
+  --blue:#1F4E8C; --blue-soft:#E3ECF8; --code-bg:#FBFAF9;
+  --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"Source Code Pro",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151111; --card:#201A19; --fg:#F1ECEA; --muted:#AA9F9C; --line:#3A302E; --soft:#2A2321;
+  --red:#E2553C; --red-ink:#1A0A07; --red-soft:#3A1F1A; --ok:#4CC28A; --ok-soft:#173326; --warn:#E3B25A; --warn-soft:#3A2D12;
+  --blue:#8DB4EC; --blue-soft:#1B2A3F; --code-bg:#1A1514; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151111; --card:#201A19; --fg:#F1ECEA; --muted:#AA9F9C; --line:#3A302E; --soft:#2A2321;
+  --red:#E2553C; --red-ink:#1A0A07; --red-soft:#3A1F1A; --ok:#4CC28A; --ok-soft:#173326; --warn:#E3B25A; --warn-soft:#3A2D12;
+  --blue:#8DB4EC; --blue-soft:#1B2A3F; --code-bg:#1A1514; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.band{background:var(--red);color:var(--red-ink)}
+header.band .wrap{padding-block:26px 20px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between}
+h1{margin:0;font-size:30px;line-height:1.15;text-wrap:balance}
+header.band p{margin:6px 0 0;max-width:62ch;opacity:.92}
+.tools{display:flex;flex-direction:column;gap:10px;min-width:260px}
+.bar{height:6px;border-radius:3px;background:color-mix(in srgb,currentColor 25%,transparent);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:currentColor;transition:width .3s}
+.sep{display:flex;gap:4px;align-items:center;font-size:14px;flex-wrap:wrap}
+.sep button{all:unset;cursor:pointer;padding:4px 10px;border-radius:999px;border:1px solid currentColor;font-family:var(--mono);font-size:13px}
+.sep button[aria-pressed="true"]{background:var(--red-ink);color:var(--red)}
+.sep button:focus-visible{outline:2px solid var(--red-ink);outline-offset:2px}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px;padding-block:28px 64px;align-items:start}
+nav.toc{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;font-size:14px}
+nav.toc a{display:flex;gap:8px;padding:5px 8px;border-radius:6px;color:var(--fg);text-decoration:none}
+nav.toc a:hover{background:var(--card)}
+nav.toc a .n{font-variant-numeric:tabular-nums;color:var(--muted);width:20px;flex:none}
+nav.toc a.done .n{color:var(--ok);font-weight:700}
+main{min-width:0;display:flex;flex-direction:column;gap:28px}
+section.step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;scroll-margin-top:16px}
+section.step.done{border-color:var(--ok)}
+.stephead{display:flex;gap:14px;align-items:flex-start}
+.num{flex:none;width:36px;height:36px;border-radius:50%;background:var(--red);color:var(--red-ink);display:flex;align-items:center;justify-content:center;font-weight:700}
+section.step.done .num{background:var(--ok)}
+.stephead h2{margin:4px 0 2px;font-size:22px;line-height:1.25;text-wrap:balance}
+.goal{color:var(--muted);margin:0}
+.donebox{margin-left:auto;display:flex;gap:6px;align-items:center;font-size:14px;white-space:nowrap;cursor:pointer}
+.donebox input{width:18px;height:18px;accent-color:var(--ok)}
+.body{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.body p{margin:0;max-width:72ch}
+ol.clicks{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+ol.clicks b{font-weight:700}
+.path{font-weight:600;background:var(--soft);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.tip{border-radius:8px;padding:10px 14px;font-size:15px;max-width:80ch}
+.tip.info{background:var(--blue-soft)}
+.tip.warn{background:var(--warn-soft)}
+.tip.ok{background:var(--ok-soft)}
+.tip b:first-child{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th{background:var(--soft);text-align:left;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 10px;white-space:nowrap}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{font-family:var(--mono);font-size:13.5px;white-space:nowrap;font-weight:600}
+code{font-family:var(--mono);font-size:13.5px;background:var(--code-bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;word-break:break-word}
+.fxcell{display:flex;gap:6px;align-items:flex-start}
+.fxcell code{flex:1;min-width:0}
+.cp{all:unset;cursor:pointer;font-size:12px;font-weight:700;color:var(--red);border:1px solid var(--red);border-radius:5px;padding:1px 7px;flex:none;line-height:1.6}
+.cp:hover{background:var(--red-soft)}
+.cp:focus-visible{outline:2px solid var(--red);outline-offset:1px}
+.cp.ok{color:var(--ok);border-color:var(--ok)}
+.codebox{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg)}
+.codebox .cbhead{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.codebox .cbhead b{font-family:var(--mono);color:var(--fg)}
+pre{margin:0;padding:12px 14px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.55;white-space:pre}
+figure{margin:0;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:8px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--muted)}
+.sv-card{fill:var(--card)}.sv-bg{fill:var(--bg)}.sv-soft{fill:var(--soft)}.sv-line{stroke:var(--line);fill:none}
+.sv-red{fill:var(--red)}.sv-redsoft{fill:var(--red-soft)}.sv-redline{stroke:var(--red);fill:none}
+.sv-blue{fill:var(--blue-soft)}.sv-ok{fill:var(--ok-soft)}.sv-warn{fill:var(--warn-soft)}
+.sv-t{fill:var(--fg);font-family:var(--sans)}.sv-m{fill:var(--muted);font-family:var(--sans)}.sv-w{fill:var(--red-ink);font-family:var(--sans)}
+.sv-mono{fill:var(--fg);font-family:var(--mono)}
+.tree{font-family:var(--mono);font-size:13.5px;line-height:1.75;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;overflow-x:auto;white-space:pre}
+.tree .k{color:var(--muted)}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 18px;font-size:14px;margin:0;padding:0;list-style:none}
+.legend li{display:flex;gap:8px}
+.legend .dot{flex:none;width:22px;height:22px;border-radius:50%;background:var(--red);color:var(--red-ink);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.parts{display:flex;flex-direction:column;gap:10px}
+details{border:1px solid var(--line);border-radius:8px;background:var(--card)}
+details summary{cursor:pointer;padding:10px 14px;font-weight:600}
+details[open] summary{border-bottom:1px solid var(--line)}
+details .inner{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+ul.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.check label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+ul.check input{margin-top:4px;accent-color:var(--ok);width:16px;height:16px;flex:none}
+@media (max-width:860px){.path{white-space:normal}.stephead{flex-wrap:wrap}.donebox{margin-left:50px}.layout{grid-template-columns:1fr}nav.toc{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:4px}nav.toc a{background:var(--card);border:1px solid var(--line)}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+h3{margin:10px 0 0;font-size:17px;line-height:1.3;text-wrap:balance}
+ul.plain{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+ol.clicks ul{margin:6px 0 2px;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.tip ul.plain{margin-top:4px}
+</style>
+
+<header class="band"><div class="wrap">
+  <div>
+    <h1>Flujos de la pantalla Nueva solicitud</h1>
+    <p>Los flujos de Power Automate que necesita la pantalla <code style="background:transparent;border-color:currentColor;color:inherit">scrNuevaSolicitud</code>, armados clic por clic, y cómo conectarlos con Power Apps y probarlos. Marca cada paso al terminarlo; tu avance se guarda en este navegador.</p>
+  </div>
+  <div class="tools">
+    <div><span id="avTxt">0 de 6 partes</span><div class="bar"><i id="avBar"></i></div></div>
+    <div class="sep" role="group" aria-label="Separador de fórmulas de Power Apps">
+      <span>Mis fórmulas de Power Apps usan:</span>
+      <button type="button" id="sepEn" aria-pressed="true">, y ;</button>
+      <button type="button" id="sepEs" aria-pressed="false">; y ;;</button>
+    </div>
+  </div>
+</div></header>
+
+<div class="wrap layout">
+<nav class="toc" id="toc" aria-label="Partes"></nav>
+<main id="main">
+
+<!-- PARTE 0 -->
+<section class="step" id="p0" data-step="0">
+  <div class="stephead"><div class="num">0</div><div><h2>Antes de empezar</h2><p class="goal">Qué vas a construir, en qué orden y qué necesitas a la mano.</p></div>
+  <label class="donebox"><input type="checkbox" data-done="0">Hecho</label></div>
+  <div class="body">
+    <div class="tbl"><table>
+      <thead><tr><th>Flujo</th><th>Se dispara con</th><th>Para qué</th><th>Quién lo usa</th></tr></thead>
+      <tbody>
+        <tr><td>BuscarExpedienteApp</td><td>Power Apps (V2)</td><td>Encuentra la carpeta "N.º siniestro - NOMBRES" del expediente en el sitio de Pensión. Si hay varias, usa la más reciente.</td><td>La pantalla, al elegir o escribir el siniestro y con "Buscar de nuevo"</td></tr>
+        <tr><td>SubirDocumento</td><td>Power Apps (V2)</td><td>Guarda el Formato N.º 1 y el expediente médico en la carpeta que corresponde y devuelve su link.</td><td>El botón Registrar, una vez por cada archivo</td></tr>
+        <tr><td>CargaSiniestrosPension</td><td>Al subir un Excel a una carpeta</td><td>Pasa la exportación del módulo de Pensión a la lista SiniestrosPension, que es donde busca la pantalla.</td><td>Nadie lo llama: corre solo</td></tr>
+      </tbody></table></div>
+    <p><b>Orden recomendado:</b> parte 1 (BuscarExpedienteApp) → parte 2 (SubirDocumento) → parte 3 (conectarlos con Power Apps y probar) → parte 4 (CargaSiniestrosPension). Mientras construyes la app puedes cargar a mano 2 o 3 siniestros de prueba en SiniestrosPension; el flujo de carga puede quedar para el final.</p>
+    <div class="tip warn"><b>Ten a la mano</b>
+      <ul class="plain">
+        <li>La cuenta con la que se crean los flujos: <b>sctrsalud</b>. Debe tener permiso de <b>edición</b> en la biblioteca del sitio SCTR y en la biblioteca de expedientes del sitio de Pensión.</li>
+        <li>La dirección de los dos sitios, por ejemplo <code>https://tuempresa.sharepoint.com/sites/SCTR</code>. Cópiala del navegador hasta el nombre del sitio, sin <code>/SitePages</code> ni nada después.</li>
+        <li>El <b>entorno</b> de Power Platform donde está la app. Arriba a la derecha de Power Automate y de Power Apps dice "Entorno": tiene que ser el mismo en los dos.</li>
+      </ul>
+    </div>
+    <div class="tip info"><b>No necesitas licencia premium</b>Estos flujos usan solo conectores estándar: Power Apps, SharePoint, Excel Online (Business) y Operaciones de datos. No se usa "Enviar una solicitud HTTP a SharePoint", que está bloqueada en tu organización.</div>
+    <div class="tip info"><b>Cómo escribir una expresión en el diseñador nuevo</b>Haz clic dentro del campo y pulsa el ícono <b>fx</b> (o escribe <code>/</code> y elige <b>Insertar expresión</b>). Pega la expresión en el cuadro y pulsa <b>Agregar</b>. El campo muestra una "pastilla" de color con la expresión. Para usar un dato de un paso anterior sin escribir, pulsa el ícono del <b>rayo</b> (contenido dinámico) y elígelo de la lista.</div>
+    <div class="tip info"><b>Las expresiones de los flujos no cambian con el separador</b>El botón "; y ;;" de arriba solo afecta las fórmulas de Power Apps (parte 3). Las expresiones de Power Automate siempre usan coma: cópialas tal cual.</div>
+  </div>
+</section>
+
+<!-- PARTE 1 -->
+<section class="step" id="p1" data-step="1">
+  <div class="stephead"><div class="num">1</div><div><h2>Flujo BuscarExpedienteApp</h2><p class="goal">Recibe un N.º de siniestro y devuelve la carpeta del expediente en el sitio de Pensión.</p></div>
+  <label class="donebox"><input type="checkbox" data-done="1">Hecho</label></div>
+  <div class="body">
+    <figure>
+      <svg viewBox="0 0 900 470" role="img" aria-label="Cómo se ve el flujo BuscarExpedienteApp terminado en el diseñador">
+        <rect x="0" y="0" width="900" height="470" rx="8" class="sv-bg"/>
+        <g font-size="13">
+          <rect x="250" y="18" width="400" height="58" rx="8" class="sv-card" style="stroke:var(--red);stroke-width:1.5"/>
+          <rect x="262" y="32" width="30" height="30" rx="6" class="sv-red"/><text x="277" y="52" text-anchor="middle" font-size="12" font-weight="700" class="sv-w">PA</text>
+          <text x="304" y="44" font-weight="700" class="sv-t">Cuando Power Apps llama a un flujo (V2)</text>
+          <text x="304" y="62" font-size="12" class="sv-m">Entrada: NroSiniestro (Texto)</text>
+          <line x1="450" y1="76" x2="450" y2="96" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="96" width="400" height="58" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="262" y="110" width="30" height="30" rx="6" class="sv-blue"/><text x="277" y="130" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">SP</text>
+          <text x="304" y="122" font-weight="700" class="sv-t">Obtener carpetas</text>
+          <text x="304" y="140" font-size="12" class="sv-m">SharePoint · Obtener archivos (solo propiedades)</text>
+          <line x1="450" y1="154" x2="450" y2="174" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="174" width="400" height="58" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="262" y="188" width="30" height="30" rx="6" class="sv-soft"/><text x="277" y="208" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">{ }</text>
+          <text x="304" y="200" font-weight="700" class="sv-t">Filtrar</text>
+          <text x="304" y="218" font-size="12" class="sv-m">Operación de datos · Filtrar matriz</text>
+          <line x1="450" y1="232" x2="450" y2="252" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="252" width="400" height="58" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="262" y="266" width="30" height="30" rx="6" class="sv-soft"/><text x="277" y="286" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">{ }</text>
+          <text x="304" y="278" font-weight="700" class="sv-t">Cantidad</text>
+          <text x="304" y="296" font-size="12" class="sv-m">Operación de datos · Redactar</text>
+          <line x1="450" y1="310" x2="450" y2="330" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="330" width="400" height="74" rx="8" class="sv-card" style="stroke:var(--red);stroke-width:1.5"/>
+          <rect x="262" y="344" width="30" height="30" rx="6" class="sv-red"/><text x="277" y="364" text-anchor="middle" font-size="12" font-weight="700" class="sv-w">PA</text>
+          <text x="304" y="356" font-weight="700" class="sv-t">Responder a una aplicación o flujo de Power Apps</text>
+          <text x="304" y="374" font-size="12" class="sv-m">estado · ruta · link · coincidencias · modificada</text>
+          <text x="304" y="392" font-size="12" class="sv-m">(son los nombres que la app leerá)</text>
+          <text x="40" y="128" font-size="12" class="sv-m">Busca todas las carpetas</text>
+          <text x="40" y="144" font-size="12" class="sv-m">cuyo nombre empieza con</text>
+          <text x="40" y="160" font-size="12" class="sv-m">el número, más reciente primero</text>
+          <text x="40" y="206" font-size="12" class="sv-m">Deja solo "20260411 …"</text>
+          <text x="40" y="222" font-size="12" class="sv-m">o "20260411-…"</text>
+          <text x="676" y="282" font-size="12" class="sv-m">Cuenta cuántas quedaron:</text>
+          <text x="676" y="298" font-size="12" class="sv-m">0, 1 o varias</text>
+          <text x="450" y="440" font-size="12" text-anchor="middle" class="sv-m">Las cajas con borde rojo son las que conectan con Power Apps</text>
+        </g>
+      </svg>
+      <figcaption>El flujo terminado, como se ve en el diseñador de Power Automate. Los nombres en negrita son los que le pondrás a cada acción: las expresiones los usan.</figcaption>
+    </figure>
+
+    <h3>1.1 Crear el flujo</h3>
+    <ol class="clicks">
+      <li>Entra a <span class="path">make.powerautomate.com</span> con la cuenta sctrsalud y revisa que arriba a la derecha esté el mismo <b>Entorno</b> que tu app.</li>
+      <li>Menú izquierdo <b>+ Crear</b> → <b>Flujo de nube instantáneo</b>.</li>
+      <li>Nombre del flujo: <code>BuscarExpedienteApp</code>. En la lista de desencadenadores elige <b>Cuando Power Apps llama a un flujo (V2)</b> (puede aparecer como "Power Apps (V2)") → <b>Crear</b>.</li>
+    </ol>
+
+    <h3>1.2 La entrada: el N.º de siniestro</h3>
+    <ol class="clicks">
+      <li>Haz clic en la caja del desencadenador → <b>+ Agregar una entrada</b> → <b>Texto</b>.</li>
+      <li>Donde dice "Entrada", escribe <code>NroSiniestro</code>. En la descripción: <code>N.º de siniestro a buscar</code>.</li>
+    </ol>
+    <div class="tip info"><b>Para qué sirve</b>Es el dato que Power Apps le mandará al flujo. Dentro del flujo se lee con la expresión <code>triggerBody()['text']</code> o eligiendo <b>NroSiniestro</b> en el contenido dinámico.</div>
+
+    <h3>1.3 Buscar las carpetas en el sitio de Pensión</h3>
+    <ol class="clicks">
+      <li>Debajo del desencadenador pulsa <b>+</b> → <b>Agregar una acción</b> → busca <b>Obtener archivos (solo propiedades)</b> (conector SharePoint) y elígela.</li>
+      <li>Cambia el nombre de la acción: haz clic en su título y escribe <code>Obtener carpetas</code>.</li>
+      <li><b>Dirección del sitio</b>: elige el sitio de <b>Pensión</b> (el de los expedientes). Si no aparece en la lista, elige <b>Escribir un valor personalizado</b> y pega su dirección.</li>
+      <li><b>Nombre de la biblioteca</b>: <b>Documentos</b>.</li>
+      <li>Abre <b>Parámetros avanzados</b> → <b>Mostrar todo</b> y completa:
+        <ul>
+          <li><b>Consulta de filtro</b>: escribe <code>FSObjType eq 1 and startswith(FileLeafRef,'</code>, luego pulsa el rayo e inserta <b>NroSiniestro</b>, y termina escribiendo <code>')</code>. Debe quedar así (la pastilla es NroSiniestro): <span class="fxcell"><code data-fx="flFiltro"></code><button class="cp" data-copy="flFiltro">Copiar</button></span></li>
+          <li><b>Ordenar por</b>: <code>Modified desc</code></li>
+          <li><b>Recuento superior</b>: <code>100</code></li>
+          <li><b>Incluir elementos anidados</b>: <b>Sí</b></li>
+        </ul></li>
+    </ol>
+    <div class="tip info"><b>Qué significa el filtro</b><code>FSObjType eq 1</code> pide solo carpetas (no archivos). <code>startswith(FileLeafRef,'20260411')</code> pide las que empiezan con ese número. <code>Modified desc</code> las ordena de la más reciente a la más antigua: así, si hay dos con el mismo número, la primera es la última modificada.</div>
+
+    <h3>1.4 Quedarse solo con las carpetas exactas</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Agregar una acción</b> → <b>Filtrar matriz</b> (Operación de datos). Cambia su nombre a <code>Filtrar</code>.</li>
+      <li><b>Desde</b>: pulsa el rayo y elige <b>body/value</b> (o "value") de <b>Obtener carpetas</b>.</li>
+      <li>Pulsa <b>Editar en modo avanzado</b> y reemplaza todo lo que haya por: <span class="fxcell"><code data-fx="flFiltrar"></code><button class="cp" data-copy="flFiltrar">Copiar</button></span></li>
+    </ol>
+    <div class="tip info"><b>Por qué este paso</b>El filtro de SharePoint con <code>startswith</code> también traería "202604119 - OTRO". Aquí solo pasan los nombres que siguen con un espacio o un guion después del número: "20260411 - ROJAS…" o "20260411-ROJAS…".</div>
+
+    <h3>1.5 Contar las carpetas</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Redactar</b> (Operación de datos). Cambia su nombre a <code>Cantidad</code>.</li>
+      <li>En <b>Entradas</b> → <b>fx</b> → pega <span class="fxcell"><code data-fx="flCantidad"></code><button class="cp" data-copy="flCantidad">Copiar</button></span> → <b>Agregar</b>.</li>
+    </ol>
+
+    <h3>1.6 Responder a Power Apps</h3>
+    <ol class="clicks">
+      <li><b>+</b> → busca <b>Responder a una aplicación o flujo de Power Apps</b> y agrégala.</li>
+      <li>Pulsa <b>+ Agregar una salida</b> cinco veces, con el tipo y nombre de la tabla. Escribe el nombre <b>en minúsculas</b>, igual que aquí: la app los lee con ese nombre exacto.</li>
+      <li>En el valor de cada salida → <b>fx</b> → pega la expresión → <b>Agregar</b>.</li>
+    </ol>
+    <div class="tbl"><table>
+      <thead><tr><th>Salida</th><th>Tipo</th><th>Expresión (valor)</th></tr></thead>
+      <tbody id="tbExpSalidas"></tbody></table></div>
+    <ol class="clicks" start="4">
+      <li>Pulsa <b>Guardar</b> (arriba a la derecha). Si sale un error, normalmente es un nombre de acción distinto: revisa que se llamen exactamente <b>Filtrar</b> y <b>Cantidad</b>.</li>
+    </ol>
+
+    <h3>1.7 Probarlo solo, antes de usarlo en la app</h3>
+    <ol class="clicks">
+      <li>Arriba a la derecha → <b>Probar</b> → <b>Manualmente</b> → <b>Probar</b>.</li>
+      <li>Escribe un N.º de siniestro que sepas que tiene carpeta → <b>Ejecutar flujo</b> → <b>Listo</b>.</li>
+      <li>Cuando termine, haz clic en la acción <b>Responder…</b> y mira las <b>entradas</b>: verás estado, ruta, link, coincidencias y modificada.</li>
+      <li>Repite con un número que no exista: estado debe ser <code>No encontrado</code>. Y con uno que tenga dos carpetas: <code>Varias carpetas (se usó la más reciente)</code>.</li>
+    </ol>
+    <div class="tip ok"><b>Funcionó si</b>Para un siniestro existente, <code>estado</code> dice "Encontrado" y <code>ruta</code> se parece a <code>Shared Documents/20260411 - ROJAS VILCA MARIA ELENA</code>. Anota esa ruta: la usarás para probar el flujo 2.</div>
+
+    <h3>1.8 (Recomendado) Responder también cuando falla</h3>
+    <p>Si la búsqueda falla, la app se queda esperando y muestra un error genérico. Con esta rama, la app recibe "Error" y le dice al usuario que vuelva a intentar.</p>
+    <ol class="clicks">
+      <li>Pasa el mouse por la flecha entre <b>Obtener carpetas</b> y <b>Filtrar</b> → <b>+</b> → <b>Agregar una rama paralela</b> → agrega otra acción <b>Responder a una aplicación o flujo de Power Apps</b>. Ponle de nombre <code>Responder error</code>.</li>
+      <li>Agrégale las mismas 5 salidas con estos valores: estado <code>Error</code> (texto escrito), ruta, link y modificada vacíos, coincidencias <code>0</code>.</li>
+      <li>En <b>Responder error</b> → pestaña <b>Configuración</b> → <b>Ejecutar después</b> → en <b>Obtener carpetas</b> desmarca <b>Correcto</b> y marca <b>Ha fallado</b> y <b>Se agotó el tiempo de espera</b>. Guarda.</li>
+    </ol>
+    <div class="tip warn"><b>Si "Obtener carpetas" falla con un error de umbral</b>Pasa cuando la biblioteca de Pensión tiene más de 5 000 elementos y la columna Nombre no está indexada. Opción A: pide al administrador del sitio que indexe la columna <b>Nombre</b> de la biblioteca (Configuración de la biblioteca → Columnas indizadas). Opción B: si todos los expedientes están en una misma carpeta, cambia la acción por <b>Enumerar carpeta</b> sobre esa carpeta, quita el filtro, y en <b>Filtrar</b> usa <code>item()?['Name']</code> en lugar de <code>item()?['{Name}']</code>.</div>
+  </div>
+</section>
+
+<!-- PARTE 2 -->
+<section class="step" id="p2" data-step="2">
+  <div class="stephead"><div class="num">2</div><div><h2>Flujo SubirDocumento</h2><p class="goal">Recibe un archivo y lo guarda en la carpeta del asegurado (Salud), del expediente (Pensión) o en Pendientes de expediente.</p></div>
+  <label class="donebox"><input type="checkbox" data-done="2">Hecho</label></div>
+  <div class="body">
+    <figure>
+      <svg viewBox="0 0 900 430" role="img" aria-label="Cómo se ve el flujo SubirDocumento terminado en el diseñador">
+        <rect x="0" y="0" width="900" height="430" rx="8" class="sv-bg"/>
+        <g font-size="13">
+          <rect x="250" y="18" width="400" height="74" rx="8" class="sv-card" style="stroke:var(--red);stroke-width:1.5"/>
+          <rect x="262" y="32" width="30" height="30" rx="6" class="sv-red"/><text x="277" y="52" text-anchor="middle" font-size="12" font-weight="700" class="sv-w">PA</text>
+          <text x="304" y="44" font-weight="700" class="sv-t">Cuando Power Apps llama a un flujo (V2)</text>
+          <text x="304" y="62" font-size="12" class="sv-m">SolicitudID · Sitio · Carpeta · TipoDocumento</text>
+          <text x="304" y="78" font-size="12" class="sv-m">Archivo (tipo Archivo)</text>
+          <line x1="450" y1="92" x2="450" y2="112" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="112" width="400" height="52" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="262" y="123" width="30" height="30" rx="6" class="sv-soft"/><text x="277" y="143" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">{ }</text>
+          <text x="304" y="136" font-weight="700" class="sv-t">SitioURL</text><text x="304" y="153" font-size="12" class="sv-m">Redactar · ¿sitio SCTR o sitio de Pensión?</text>
+          <line x1="450" y1="164" x2="450" y2="184" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="184" width="400" height="52" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="262" y="195" width="30" height="30" rx="6" class="sv-soft"/><text x="277" y="215" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">{ }</text>
+          <text x="304" y="208" font-weight="700" class="sv-t">RutaCarpeta</text><text x="304" y="225" font-size="12" class="sv-m">Redactar · ruta completa de la carpeta</text>
+          <line x1="450" y1="236" x2="450" y2="256" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="256" width="400" height="52" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="262" y="267" width="30" height="30" rx="6" class="sv-blue"/><text x="277" y="287" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">SP</text>
+          <text x="304" y="280" font-weight="700" class="sv-t">Crear archivo</text><text x="304" y="297" font-size="12" class="sv-m">SharePoint · crea la carpeta si no existe</text>
+          <line x1="450" y1="308" x2="450" y2="328" class="sv-redline" stroke-width="1.5"/>
+          <rect x="250" y="328" width="400" height="58" rx="8" class="sv-card" style="stroke:var(--red);stroke-width:1.5"/>
+          <rect x="262" y="342" width="30" height="30" rx="6" class="sv-red"/><text x="277" y="362" text-anchor="middle" font-size="12" font-weight="700" class="sv-w">PA</text>
+          <text x="304" y="354" font-weight="700" class="sv-t">Responder a una aplicación o flujo de Power Apps</text>
+          <text x="304" y="372" font-size="12" class="sv-m">link · ruta · carpeta · nombre · tipo</text>
+          <text x="40" y="130" font-size="12" class="sv-m">Sitio = "Pensión (expediente)"</text>
+          <text x="40" y="146" font-size="12" class="sv-m">→ sitio de Pensión; si no,</text>
+          <text x="40" y="162" font-size="12" class="sv-m">→ sitio SCTR</text>
+          <text x="676" y="204" font-size="12" class="sv-m">La app manda la carpeta</text>
+          <text x="676" y="220" font-size="12" class="sv-m">ya armada (paso 17 de la</text>
+          <text x="676" y="236" font-size="12" class="sv-m">guía de la pantalla)</text>
+          <text x="450" y="416" font-size="12" text-anchor="middle" class="sv-m">El flujo no toca columnas de SharePoint: la app registra el archivo en DocumentosCaso con lo que el flujo responde</text>
+        </g>
+      </svg>
+      <figcaption>Cinco cajas. Si ya creaste un SubirDocumento con la versión anterior de la guía, bórralo y crea este desde cero: cambiaron sus entradas.</figcaption>
+    </figure>
+
+    <h3>2.1 Crear el flujo y sus entradas</h3>
+    <ol class="clicks">
+      <li><b>+ Crear</b> → <b>Flujo de nube instantáneo</b> → nombre <code>SubirDocumento</code> → <b>Cuando Power Apps llama a un flujo (V2)</b> → <b>Crear</b>.</li>
+      <li>En el desencadenador agrega estas 5 entradas, <b>en este orden exacto</b> (la app las manda en el mismo orden):</li>
+    </ol>
+    <div class="tbl"><table>
+      <thead><tr><th>Orden</th><th>Tipo</th><th>Nombre</th><th>Cómo se lee en el flujo</th><th>Ejemplo de lo que manda la app</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Número</td><td><code>SolicitudID</code></td><td><code>triggerBody()['number']</code></td><td>125</td></tr>
+        <tr><td>2</td><td>Texto</td><td><code>Sitio</code></td><td><code>triggerBody()['text']</code></td><td>SCTR (Salud) · Pensión (expediente) · SCTR (pendiente de expediente)</td></tr>
+        <tr><td>3</td><td>Texto</td><td><code>Carpeta</code></td><td><code>triggerBody()['text_1']</code></td><td>40001001 - QUISPE HUAMAN JUAN CARLOS</td></tr>
+        <tr><td>4</td><td>Texto</td><td><code>TipoDocumento</code></td><td><code>triggerBody()['text_2']</code></td><td>Formato N.º 1</td></tr>
+        <tr><td>5</td><td>Archivo</td><td><code>Archivo</code></td><td><code>triggerBody()['file']</code></td><td>(el PDF)</td></tr>
+      </tbody></table></div>
+    <div class="tip info"><b>Comprueba los nombres internos</b>Power Automate nombra las entradas por tipo: la primera de Texto es <code>text</code>, la segunda <code>text_1</code>, la tercera <code>text_2</code>. Para verlo: en el desencadenador → <b>…</b> → <b>Ver código</b> (Peek code). Si ves otros nombres (por ejemplo, porque agregaste y borraste una entrada), usa esos en las expresiones de abajo.</div>
+
+    <h3>2.2 Elegir el sitio</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Redactar</b>. Nombre: <code>SitioURL</code>.</li>
+      <li>Entradas → <b>fx</b> → pega la expresión y <b>cambia las dos direcciones</b> de ejemplo por las reales (la primera es la de Pensión, la segunda la de SCTR) → <b>Agregar</b>.</li>
+    </ol>
+    <div class="codebox"><div class="cbhead"><span>Redactar <b>SitioURL</b> → Entradas</span><button class="cp" data-copy="flSitio">Copiar</button></div><pre data-fx="flSitio"></pre></div>
+
+    <h3>2.3 Armar la ruta de la carpeta</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Redactar</b>. Nombre: <code>RutaCarpeta</code>.</li>
+      <li>Entradas → <b>fx</b> → pega:</li>
+    </ol>
+    <div class="codebox"><div class="cbhead"><span>Redactar <b>RutaCarpeta</b> → Entradas</span><button class="cp" data-copy="flRuta">Copiar</button></div><pre data-fx="flRuta"></pre></div>
+    <div class="tip info"><b>Qué hace</b>En Pensión la app ya manda la ruta completa del expediente, que empieza con el nombre de la biblioteca (por ejemplo <code>Shared Documents/20260411 - ROJAS…/Evaluaciones médicas</code>). En SCTR la app manda solo el nombre de la carpeta y aquí se le antepone <code>/Shared Documents/</code>.</div>
+    <div class="tip warn"><b>Revisa el nombre real de la biblioteca de SCTR</b>Abre la biblioteca Documentos del sitio SCTR en el navegador y mira la dirección: después de <code>/sites/SCTR/</code> verás <code>Shared%20Documents</code> (es decir, "Shared Documents") u otro nombre como <code>Documentos%20compartidos</code>. Si es otro, cámbialo en la expresión.</div>
+
+    <h3>2.4 Crear el archivo</h3>
+    <ol class="clicks">
+      <li><b>+</b> → busca <b>Crear archivo</b> (conector SharePoint). Su nombre debe quedar <code>Crear archivo</code> (es el que trae por defecto).</li>
+      <li><b>Dirección del sitio</b> → <b>Escribir un valor personalizado</b> → pulsa el rayo → <b>Salidas</b> de <b>SitioURL</b>.</li>
+      <li><b>Ruta de acceso de carpeta</b> → rayo → <b>Salidas</b> de <b>RutaCarpeta</b>. (No uses el ícono de carpeta: con un sitio variable no puede mostrar la lista.)</li>
+      <li><b>Nombre de archivo</b> → <b>fx</b> → <span class="fxcell"><code data-fx="flNombre"></code><button class="cp" data-copy="flNombre">Copiar</button></span></li>
+      <li><b>Contenido del archivo</b> → <b>fx</b> → <span class="fxcell"><code data-fx="flContenido"></code><button class="cp" data-copy="flContenido">Copiar</button></span></li>
+    </ol>
+    <div class="tip info"><b>El número de solicitud delante del nombre</b>Así el archivo queda como <code>125 - Formato1.pdf</code>: dos solicitudes del mismo asegurado no chocan aunque suban un archivo con el mismo nombre, y en la carpeta se ve a qué solicitud pertenece cada uno.</div>
+
+    <h3>2.5 Responder a Power Apps</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Responder a una aplicación o flujo de Power Apps</b>.</li>
+      <li><b>+ Agregar una salida</b> → <b>Texto</b> cinco veces, con estos nombres en minúsculas y estos valores (con <b>fx</b>):</li>
+    </ol>
+    <div class="tbl"><table>
+      <thead><tr><th>Salida</th><th>Tipo</th><th>Expresión (valor)</th></tr></thead>
+      <tbody id="tbSubirSalidas"></tbody></table></div>
+    <ol class="clicks" start="3">
+      <li><b>Guardar</b>.</li>
+    </ol>
+
+    <h3>2.6 Probarlo solo</h3>
+    <ol class="clicks">
+      <li><b>Probar</b> → <b>Manualmente</b> → <b>Probar</b>. Llena: SolicitudID <code>0</code>, Sitio <code>SCTR (Salud)</code>, Carpeta <code>PRUEBA - FLUJO</code>, TipoDocumento <code>Otro</code>, y elige un PDF cualquiera → <b>Ejecutar flujo</b>.</li>
+      <li>Abre la biblioteca Documentos del sitio SCTR: debe existir la carpeta <b>PRUEBA - FLUJO</b> con el archivo <code>0 - (nombre).pdf</code>.</li>
+      <li>Segunda prueba, en Pensión: Sitio <code>Pensión (expediente)</code>, Carpeta = la <b>ruta</b> que anotaste en la prueba del flujo 1 + <code>/Evaluaciones médicas</code>. Revisa que dentro del expediente apareció la subcarpeta <b>Evaluaciones médicas</b> con el archivo.</li>
+      <li>Borra a mano los archivos y carpetas de prueba.</li>
+    </ol>
+    <div class="tip ok"><b>Funcionó si</b>En la ejecución, la acción <b>Responder</b> muestra un <code>link</code> que, pegado en el navegador, abre el archivo.</div>
+  </div>
+</section>
+
+<!-- PARTE 3 -->
+<section class="step" id="p3" data-step="3">
+  <div class="stephead"><div class="num">3</div><div><h2>Conectar los flujos con Power Apps</h2><p class="goal">Agregarlos a la app, decidir con qué cuenta corren, probarlos con un botón temporal y ubicar las llamadas reales.</p></div>
+  <label class="donebox"><input type="checkbox" data-done="3">Hecho</label></div>
+  <div class="body">
+    <figure>
+      <svg viewBox="0 0 900 300" role="img" aria-label="Panel Power Automate dentro de Power Apps Studio">
+        <rect x="0" y="0" width="900" height="300" rx="8" class="sv-bg"/>
+        <rect x="0" y="0" width="900" height="34" rx="8" class="sv-card" style="stroke:var(--line)"/>
+        <text x="14" y="22" font-size="12" class="sv-m">Power Apps Studio · Programaciones Medicas SCTR</text>
+        <rect x="0" y="38" width="46" height="262" class="sv-card" style="stroke:var(--line)"/>
+        <rect x="10" y="52" width="26" height="22" rx="4" class="sv-soft"/><rect x="10" y="84" width="26" height="22" rx="4" class="sv-soft"/><rect x="10" y="116" width="26" height="22" rx="4" class="sv-soft"/>
+        <rect x="10" y="148" width="26" height="22" rx="4" class="sv-redsoft" style="stroke:var(--red)"/>
+        <circle cx="23" cy="191" r="0"/>
+        <rect x="50" y="38" width="290" height="262" class="sv-card" style="stroke:var(--line)"/>
+        <text x="62" y="62" font-size="13" font-weight="700" class="sv-t">Power Automate</text>
+        <rect x="62" y="74" width="140" height="28" rx="5" class="sv-red"/><text x="132" y="93" font-size="12" font-weight="700" text-anchor="middle" class="sv-w">+ Agregar flujo</text>
+        <text x="62" y="128" font-size="11" class="sv-m">En esta aplicación</text>
+        <rect x="62" y="136" width="266" height="30" rx="5" class="sv-soft"/><text x="72" y="155" font-size="12" class="sv-mono">BuscarExpedienteApp</text><text x="314" y="155" font-size="13" class="sv-m" text-anchor="end">…</text>
+        <rect x="62" y="172" width="266" height="30" rx="5" class="sv-soft"/><text x="72" y="191" font-size="12" class="sv-mono">SubirDocumento</text><text x="314" y="191" font-size="13" class="sv-m" text-anchor="end">…</text>
+        <text x="62" y="230" font-size="11" class="sv-m">"…" → Actualizar / Quitar de la app</text>
+        <rect x="346" y="38" width="554" height="262" class="sv-soft"/>
+        <rect x="370" y="60" width="506" height="30" rx="4" class="sv-card" style="stroke:var(--line)"/>
+        <text x="380" y="80" font-size="12" class="sv-mono">OnSelect  fx  Set(varExp, BuscarExpedienteApp.Run("20260411"))</text>
+        <text x="370" y="130" font-size="12" class="sv-m">Al escribir el nombre del flujo y un punto, Power Apps</text>
+        <text x="370" y="148" font-size="12" class="sv-m">sugiere .Run( y muestra qué datos pide, en orden.</text>
+        <g font-size="12" font-weight="700">
+          <circle cx="23" cy="159" r="11" class="sv-red"/><text x="23" y="163" text-anchor="middle" class="sv-w">1</text>
+          <circle cx="216" cy="88" r="11" class="sv-red"/><text x="216" y="92" text-anchor="middle" class="sv-w">2</text>
+          <circle cx="328" cy="128" r="11" class="sv-red"/><text x="328" y="132" text-anchor="middle" class="sv-w">3</text>
+          <circle cx="866" cy="75" r="11" class="sv-red"/><text x="866" y="79" text-anchor="middle" class="sv-w">4</text>
+        </g>
+      </svg>
+      <ul class="legend">
+        <li><span class="dot">1</span><span>Ícono <b>Power Automate</b> en la barra izquierda (si no lo ves, pulsa <b>…</b> Más).</span></li>
+        <li><span class="dot">2</span><span><b>+ Agregar flujo</b>: lista los flujos de tu entorno que empiezan con Power Apps (V2).</span></li>
+        <li><span class="dot">3</span><span>Flujos ya agregados a la app. Con <b>…</b> se actualizan o se quitan.</span></li>
+        <li><span class="dot">4</span><span>La llamada desde una fórmula: <code>NombreDelFlujo.Run(…)</code>.</span></li>
+      </ul>
+      <figcaption>Dónde están los flujos dentro de Power Apps Studio.</figcaption>
+    </figure>
+
+    <h3>3.1 Agregar los dos flujos a la app</h3>
+    <ol class="clicks">
+      <li>Abre la app: <span class="path">make.powerapps.com → Aplicaciones → Programaciones Medicas SCTR → Editar</span>.</li>
+      <li>Barra izquierda → <b>Power Automate</b> (1) → <b>+ Agregar flujo</b> (2).</li>
+      <li>Busca y elige <b>BuscarExpedienteApp</b>. Repite y elige <b>SubirDocumento</b>.</li>
+      <li>Los dos aparecen en <b>En esta aplicación</b> (3).</li>
+    </ol>
+    <div class="tip warn"><b>Si no aparecen en la lista</b>Revisa tres cosas: que el flujo esté <b>guardado</b>, que su desencadenador sea <b>Power Apps (V2)</b> y que la app y el flujo estén en el <b>mismo entorno</b>. Si lo creaste con otra cuenta, compártelo con tu cuenta como copropietario.</div>
+
+    <h3>3.2 Decidir con qué cuenta corren</h3>
+    <p>Por defecto, cuando un ejecutivo usa la app, el flujo puede pedir <b>su</b> conexión de SharePoint, y muchos ejecutivos no tienen permiso en el sitio de Pensión. Para que siempre corran con la cuenta sctrsalud:</p>
+    <ol class="clicks">
+      <li>En Power Automate → <b>Mis flujos</b> → abre <b>BuscarExpedienteApp</b> (la página de detalles, no el editor).</li>
+      <li>Busca el cuadro <b>Usuarios solo de ejecución</b> → <b>Editar</b>.</li>
+      <li>En <b>Conexiones utilizadas</b>, en SharePoint, cambia "Proporcionado por el usuario solo de ejecución" por <b>Usar esta conexión (sctrsalud…)</b> → <b>Guardar</b>.</li>
+      <li>Repite con <b>SubirDocumento</b>.</li>
+      <li>En Power Apps, en el panel Power Automate, <b>…</b> junto a cada flujo → <b>Actualizar</b>.</li>
+    </ol>
+    <div class="tip info"><b>Por qué conviene</b>Así los archivos se guardan con los permisos de sctrsalud y los ejecutivos no necesitan acceso directo al sitio de Pensión. En SharePoint, el campo "Modificado por" de los archivos dirá sctrsalud; quién subió cada archivo queda en la lista DocumentosCaso (columna Subido por).</div>
+
+    <h3>3.3 Prueba rápida de BuscarExpedienteApp desde la app</h3>
+    <ol class="clicks">
+      <li>En cualquier pantalla inserta un <b>Botón</b> (<code>btnPruebaExp</code>) y una <b>Etiqueta</b> (<code>lblPruebaExp</code>) temporales.</li>
+      <li><code>btnPruebaExp</code> → <b>OnSelect</b> (cambia el número por uno real):</li>
+    </ol>
+    <div class="codebox"><div class="cbhead"><span>btnPruebaExp → <b>OnSelect</b></span><button class="cp" data-copy="pfPruebaExp">Copiar</button></div><pre data-fx="pfPruebaExp"></pre></div>
+    <ol class="clicks" start="3">
+      <li><code>lblPruebaExp</code> → <b>Text</b>:</li>
+    </ol>
+    <div class="codebox"><div class="cbhead"><span>lblPruebaExp → <b>Text</b></span><button class="cp" data-copy="pfPruebaExpLbl">Copiar</button></div><pre data-fx="pfPruebaExpLbl"></pre></div>
+    <ol class="clicks" start="4">
+      <li><b>F5</b> → pulsa el botón. En 2 o 3 segundos la etiqueta muestra el estado, cuántas carpetas encontró y la ruta.</li>
+    </ol>
+
+    <h3>3.4 Prueba rápida de SubirDocumento desde la app</h3>
+    <p>Hazla en la pantalla <code>scrNuevaSolicitud</code>, porque necesita el control de adjuntos <code>attFormato1</code> (paso 13 de la guía de la pantalla).</p>
+    <ol class="clicks">
+      <li>Inserta un <b>Botón</b> <code>btnPruebaSubir</code> y una <b>Etiqueta</b> <code>lblPruebaSubir</code> temporales.</li>
+      <li><code>btnPruebaSubir</code> → <b>OnSelect</b>:</li>
+    </ol>
+    <div class="codebox"><div class="cbhead"><span>btnPruebaSubir → <b>OnSelect</b></span><button class="cp" data-copy="pfPruebaSubir">Copiar</button></div><pre data-fx="pfPruebaSubir"></pre></div>
+    <ol class="clicks" start="3">
+      <li><code>lblPruebaSubir</code> → <b>Text</b>: <span class="fxcell"><code data-fx="pfPruebaSubirLbl"></code><button class="cp" data-copy="pfPruebaSubirLbl">Copiar</button></span></li>
+      <li><b>F5</b> → adjunta un PDF en <code>attFormato1</code> → pulsa el botón. La etiqueta muestra cuántos archivos subió y el link del primero. Revisa la carpeta <b>PRUEBA - APP</b> en el sitio SCTR.</li>
+      <li>Cuando las dos pruebas funcionen, <b>borra</b> los botones y etiquetas de prueba, y la carpeta PRUEBA - APP.</li>
+    </ol>
+    <div class="tip info"><b>Cómo se manda un archivo a un flujo</b>Los datos simples van en orden, separados por coma. El archivo va al final como un registro con dos campos: <code>{file: {contentBytes: a.Value, name: a.Name}}</code>. <code>a.Value</code> es el contenido y <code>a.Name</code> el nombre, ambos del control de adjuntos.</div>
+
+    <h3>3.5 Dónde quedan las llamadas reales</h3>
+    <p>Estas fórmulas ya están en la guía de la pantalla Nueva solicitud. Esta tabla te dice dónde va cada una:</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Control · propiedad</th><th>Flujo</th><th>Cuándo se ejecuta</th><th>Guía de la pantalla</th></tr></thead>
+      <tbody>
+        <tr><td>btnBuscar · OnSelect</td><td>BuscarExpedienteApp</td><td>Pensión, si al buscar queda un solo siniestro elegido</td><td>Paso 7</td></tr>
+        <tr><td>galSiniestros · OnSelect</td><td>BuscarExpedienteApp</td><td>Al hacer clic en un siniestro de la lista</td><td>Paso 8</td></tr>
+        <tr><td>txtNroSiniestro · OnChange</td><td>BuscarExpedienteApp</td><td>Al escribir o corregir el N.º de siniestro y salir del campo</td><td>Paso 10</td></tr>
+        <tr><td>btnBuscarExp · OnSelect</td><td>BuscarExpedienteApp</td><td>Botón "Buscar de nuevo" del panel del expediente</td><td>Paso 14</td></tr>
+        <tr><td>btnRegistrar · OnSelect (parte 6)</td><td>SubirDocumento</td><td>Al registrar, una vez por cada archivo adjunto</td><td>Paso 17</td></tr>
+      </tbody></table></div>
+    <div class="tip info"><b>Cómo lee la app la respuesta</b><code>Set(varExp, BuscarExpedienteApp.Run(...))</code> guarda todo lo que respondió el flujo en <code>varExp</code>. Luego cada salida se lee con un punto y su nombre: <code>varExp.estado</code>, <code>varExp.ruta</code>, <code>varExp.link</code>. Por eso los nombres de las salidas deben ser exactamente los de las partes 1 y 2.</div>
+
+    <h3>3.6 Si cambias un flujo después</h3>
+    <ul class="plain">
+      <li><b>Cambios internos</b> (una expresión, una acción nueva en el medio): solo guarda el flujo. La app usa la versión nueva sin hacer nada.</li>
+      <li><b>Cambios en entradas o salidas</b> (agregar, quitar, renombrar): en Power Apps, panel Power Automate → <b>…</b> → <b>Actualizar</b>. Si sigue marcando error, <b>Quitar de la app</b> y agrégalo otra vez. Después revisa las fórmulas que lo llaman.</li>
+      <li><b>Publicar</b>: los usuarios ven los cambios de la app solo después de <b>Guardar</b> y <b>Publicar</b> la app.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PARTE 4 -->
+<section class="step" id="p4" data-step="4">
+  <div class="stephead"><div class="num">4</div><div><h2>Flujo CargaSiniestrosPension</h2><p class="goal">Cada vez que subes la exportación del módulo de Pensión, actualiza la lista SiniestrosPension.</p></div>
+  <label class="donebox"><input type="checkbox" data-done="4">Hecho</label></div>
+  <div class="body">
+    <figure>
+      <svg viewBox="0 0 900 470" role="img" aria-label="Cómo se ve el flujo CargaSiniestrosPension terminado">
+        <rect x="0" y="0" width="900" height="470" rx="8" class="sv-bg"/>
+        <g font-size="13">
+          <rect x="230" y="16" width="440" height="52" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="242" y="27" width="30" height="30" rx="6" class="sv-blue"/><text x="257" y="47" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">SP</text>
+          <text x="284" y="40" font-weight="700" class="sv-t">Cuando se crea un archivo (solo propiedades)</text><text x="284" y="57" font-size="12" class="sv-m">Sitio SCTR · Documentos · carpeta Cargas/Pension</text>
+          <line x1="450" y1="68" x2="450" y2="86" class="sv-redline" stroke-width="1.5"/>
+          <rect x="230" y="86" width="440" height="52" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="242" y="97" width="30" height="30" rx="6" class="sv-ok"/><text x="257" y="117" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">XL</text>
+          <text x="284" y="110" font-weight="700" class="sv-t">Leer Excel</text><text x="284" y="127" font-size="12" class="sv-m">Excel · Enumerar filas presentes en una tabla</text>
+          <line x1="450" y1="138" x2="450" y2="156" class="sv-redline" stroke-width="1.5"/>
+          <rect x="150" y="156" width="600" height="230" rx="8" class="sv-soft" style="stroke:var(--line)"/>
+          <text x="166" y="178" font-weight="700" class="sv-t">Cada fila  (Aplicar a cada uno · simultaneidad 20)</text>
+          <rect x="250" y="190" width="400" height="44" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <text x="264" y="217" font-weight="700" class="sv-t">Buscar siniestro</text><text x="400" y="217" font-size="12" class="sv-m">SharePoint · Obtener elementos</text>
+          <line x1="450" y1="234" x2="450" y2="250" class="sv-redline" stroke-width="1.5"/>
+          <rect x="300" y="250" width="300" height="40" rx="8" class="sv-card" style="stroke:var(--red)"/>
+          <text x="450" y="275" text-anchor="middle" font-weight="700" class="sv-t">¿Ya existe?</text>
+          <line x1="380" y1="290" x2="300" y2="318" class="sv-redline" stroke-width="1.5"/><text x="318" y="306" font-size="12" class="sv-m">Sí</text>
+          <line x1="520" y1="290" x2="600" y2="318" class="sv-redline" stroke-width="1.5"/><text x="570" y="306" font-size="12" class="sv-m">No</text>
+          <rect x="180" y="318" width="240" height="48" rx="8" class="sv-card" style="stroke:var(--line)"/><text x="300" y="347" text-anchor="middle" font-weight="700" class="sv-t">Actualizar elemento</text>
+          <rect x="480" y="318" width="240" height="48" rx="8" class="sv-card" style="stroke:var(--line)"/><text x="600" y="347" text-anchor="middle" font-weight="700" class="sv-t">Crear elemento</text>
+          <line x1="450" y1="386" x2="450" y2="404" class="sv-redline" stroke-width="1.5"/>
+          <rect x="230" y="404" width="440" height="52" rx="8" class="sv-card" style="stroke:var(--line)"/>
+          <rect x="242" y="415" width="30" height="30" rx="6" class="sv-blue"/><text x="257" y="435" text-anchor="middle" font-size="12" font-weight="700" class="sv-t">SP</text>
+          <text x="284" y="428" font-weight="700" class="sv-t">Registrar carga</text><text x="284" y="445" font-size="12" class="sv-m">SharePoint · Crear elemento en CargasExcel</text>
+        </g>
+      </svg>
+      <figcaption>El flujo revisa cada fila del Excel: si el siniestro ya está en la lista lo actualiza, y si no lo crea. Al final deja una línea en CargasExcel.</figcaption>
+    </figure>
+
+    <h3>4.1 Preparar la carpeta y el Excel</h3>
+    <ol class="clicks">
+      <li>En el sitio SCTR, biblioteca Documentos, crea la carpeta <b>Cargas</b> y dentro <b>Pension</b> (sin tilde, para evitar problemas en rutas).</li>
+      <li>Abre la exportación del módulo en Excel → selecciona una celda de los datos → <b>Inicio → Dar formato como tabla</b> (o Ctrl + T) → marca "La tabla tiene encabezados".</li>
+      <li>Pestaña <b>Diseño de tabla</b> → <b>Nombre de la tabla</b>: <code>TablaSiniestros</code>. Guarda.</li>
+      <li>Revisa que la columna del documento (DNI) esté como <b>Texto</b>, para no perder ceros a la izquierda.</li>
+    </ol>
+    <div class="tip warn"><b>Siempre con el mismo formato</b>El flujo lee las columnas por el nombre del encabezado. Cada exportación debe tener los mismos encabezados y la tabla debe llamarse <code>TablaSiniestros</code>. Si el módulo exporta siempre igual, puedes guardar una plantilla y pegar ahí los datos nuevos.</div>
+
+    <h3>4.2 Crear el flujo</h3>
+    <ol class="clicks">
+      <li><b>+ Crear</b> → <b>Flujo de nube automatizado</b>. Nombre <code>CargaSiniestrosPension</code>. Desencadenador: <b>Cuando se crea un archivo (solo propiedades)</b> (SharePoint) → <b>Crear</b>.</li>
+      <li>Dirección del sitio: <b>SCTR</b>. Nombre de la biblioteca: <b>Documentos</b>. Carpeta: con el ícono de carpeta elige <b>/Cargas/Pension</b>.</li>
+    </ol>
+
+    <h3>4.3 Leer las filas del Excel</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Enumerar filas presentes en una tabla</b> (Excel Online (Business)). Cambia su nombre a <code>Leer Excel</code>.</li>
+      <li>Ubicación: el sitio <b>SCTR</b>. Biblioteca de documentos: <b>Documentos</b>.</li>
+      <li><b>Archivo</b>: rayo → <b>Identificador</b> (del desencadenador).</li>
+      <li><b>Tabla</b>: escribe <code>TablaSiniestros</code> (como valor personalizado: la lista no puede cargarse porque el archivo cambia).</li>
+      <li><b>Parámetros avanzados</b> → <b>Formato de fecha y hora</b>: <b>ISO 8601</b>. Así las fechas llegan como fechas y no como números.</li>
+      <li>En la acción → <b>Configuración</b> → <b>Paginación</b>: <b>Activada</b>, Umbral <code>100000</code>. Sin esto solo lee las primeras 256 filas.</li>
+    </ol>
+
+    <h3>4.4 Recorrer las filas</h3>
+    <ol class="clicks">
+      <li><b>+</b> → <b>Aplicar a cada uno</b> (Control). En "Seleccionar una salida de los pasos anteriores": rayo → <b>body/value</b> de <b>Leer Excel</b>.</li>
+      <li>En <b>Aplicar a cada uno</b> → <b>Configuración</b> → <b>Control de simultaneidad</b>: <b>Activado</b>, grado <code>20</code> (procesa 20 filas a la vez).</li>
+      <li>Dentro del bucle: <b>+</b> → <b>Obtener elementos</b> (SharePoint). Nombre <code>Buscar siniestro</code>. Sitio SCTR, Lista <b>SiniestrosPension</b>.
+        <ul>
+          <li><b>Consulta de filtro</b>: escribe <code>Title eq '</code>, inserta con el rayo la columna del <b>N.º de siniestro</b> del Excel (aparece con el nombre de su encabezado) y termina con <code>'</code>.</li>
+          <li><b>Recuento superior</b>: <code>1</code>.</li>
+        </ul></li>
+      <li>Debajo, todavía dentro del bucle: <b>+</b> → <b>Condición</b>. A la izquierda → <b>fx</b> → <span class="fxcell"><code data-fx="flExiste"></code><button class="cp" data-copy="flExiste">Copiar</button></span>. Operador <b>es mayor que</b>. A la derecha <code>0</code>.</li>
+    </ol>
+
+    <h3>4.5 Actualizar o crear</h3>
+    <ol class="clicks">
+      <li>En la rama <b>Verdadero</b>: <b>Actualizar elemento</b> (SharePoint), sitio SCTR, lista SiniestrosPension. <b>Id</b> → <b>fx</b> → <span class="fxcell"><code data-fx="flIdExistente"></code><button class="cp" data-copy="flIdExistente">Copiar</button></span></li>
+      <li>En la rama <b>Falso</b>: <b>Crear elemento</b> (SharePoint), sitio SCTR, lista SiniestrosPension.</li>
+      <li>En las dos acciones llena las columnas así (con el rayo eliges la columna del Excel por su encabezado; las de <b>fx</b> se pegan):</li>
+    </ol>
+    <div class="tbl"><table>
+      <thead><tr><th>Columna de SiniestrosPension</th><th>Qué poner</th></tr></thead>
+      <tbody id="tbMapeo"></tbody></table></div>
+    <div class="tip info"><b>Cambia el nombre de la columna en las expresiones</b>Las expresiones de la tabla usan encabezados de ejemplo como <code>'APELLIDO PATERNO'</code> o <code>'NRO DOCUMENTO'</code>. Reemplázalos por los encabezados exactos de tu exportación, con mayúsculas, tildes y espacios iguales. Si el bucle no se llama "Aplicar a cada uno", usa su nombre con guiones bajos en lugar de espacios.</div>
+
+    <h3>4.6 Registrar la carga</h3>
+    <ol class="clicks">
+      <li><b>Fuera del bucle</b>, al final del flujo: <b>+</b> → <b>Crear elemento</b>. Nombre <code>Registrar carga</code>. Sitio SCTR, lista <b>CargasExcel</b>.</li>
+      <li><b>Título</b>: rayo → <b>Nombre de archivo con extensión</b> (del desencadenador). <b>Tipo de carga</b>: <b>Siniestros Pensión</b>. <b>Filas leídas</b> → <b>fx</b> → <span class="fxcell"><code data-fx="flFilas"></code><button class="cp" data-copy="flFilas">Copiar</button></span>. <b>Estado</b>: <b>Completada</b>.</li>
+      <li><b>Guardar</b>.</li>
+    </ol>
+
+    <h3>4.7 Probarlo</h3>
+    <ol class="clicks">
+      <li>Prepara un Excel <b>pequeño</b> (5 filas) con la tabla <code>TablaSiniestros</code>.</li>
+      <li><b>Probar</b> → <b>Manualmente</b> → <b>Probar</b>, y luego sube el Excel a <b>Documentos/Cargas/Pension</b>. El flujo arranca solo en uno o dos minutos.</li>
+      <li>Revisa SiniestrosPension: deben estar las 5 filas, con el DNI de 8 dígitos y el nombre completo armado.</li>
+      <li>Vuelve a subir el mismo Excel con un dato cambiado (por ejemplo, la empresa). La fila se actualiza y no se duplica.</li>
+    </ol>
+    <div class="tip warn"><b>La primera carga grande</b>Recorrer miles de filas una por una puede tardar mucho. Para la primera carga es más rápido pegar los datos en la lista con <b>Editar en vista de cuadrícula</b> (en bloques de unos cientos) y usar este flujo solo para las exportaciones nuevas. Si puedes, exporta del módulo solo los siniestros nuevos o modificados desde la última carga.</div>
+  </div>
+</section>
+
+<!-- PROBLEMAS -->
+<section class="step" id="p5" data-step="5">
+  <div class="stephead"><div class="num">?</div><div><h2>Problemas frecuentes</h2><p class="goal">Qué significa cada error y cómo resolverlo.</p></div>
+  <label class="donebox"><input type="checkbox" data-done="5">Hecho</label></div>
+  <div class="body">
+    <div class="tbl"><table>
+      <thead><tr><th>Síntoma</th><th>Causa y solución</th></tr></thead>
+      <tbody>
+        <tr><td>"The template language expression... 'Filtrar' doesn't exist"</td><td>La acción no se llama exactamente así. Renómbrala o cambia el nombre en la expresión. Los espacios del nombre se escriben con guion bajo: "Crear archivo" → <code>body('Crear_archivo')</code>.</td></tr>
+        <tr><td>El flujo no aparece en "+ Agregar flujo"</td><td>No está guardado, no usa el desencadenador Power Apps (V2) o está en otro entorno.</td></tr>
+        <tr><td>En Power Apps: "BuscarExpedienteApp.Run tiene argumentos no válidos"</td><td>La cantidad o el tipo de datos no coincide con las entradas del flujo. Revisa el orden de las entradas y, si las cambiaste, <b>…</b> → Actualizar.</td></tr>
+        <tr><td><code>varExp.estado</code> marca error en la app</td><td>La salida se llama distinto (por ejemplo "Estado" con mayúscula). Corrige el nombre en el flujo, guarda y actualiza el flujo en la app.</td></tr>
+        <tr><td>Obtener carpetas: error de umbral o "the attempted operation is prohibited"</td><td>Biblioteca grande sin índice. Ver el aviso al final de la parte 1 (indexar Nombre o usar Enumerar carpeta).</td></tr>
+        <tr><td>Siempre "No encontrado" aunque la carpeta existe</td><td>Revisa que el sitio y la biblioteca sean los de Pensión, que la carpeta empiece con el número seguido de espacio o guion, y que la cuenta del flujo tenga acceso a esa biblioteca.</td></tr>
+        <tr><td>Crear archivo: "404 / la carpeta no existe" en Pensión</td><td>La ruta que mandó la app no coincide con la real. Compara la <code>ruta</code> de BuscarExpedienteApp con la dirección de la carpeta en el navegador. Debe empezar con el nombre de la biblioteca, sin la dirección del sitio.</td></tr>
+        <tr><td>Crear archivo: error de permisos</td><td>La conexión de SharePoint del flujo no tiene permiso de edición en esa biblioteca. Pide el permiso para sctrsalud y revisa la parte 3.2.</td></tr>
+        <tr><td>Un ejecutivo ve "se requiere conexión" al usar la app</td><td>El flujo usa la conexión de cada usuario. Configura <b>Usuarios solo de ejecución → Usar esta conexión</b> (parte 3.2).</td></tr>
+        <tr><td>Carga: solo entraron 256 filas</td><td>Falta activar la <b>Paginación</b> en Leer Excel.</td></tr>
+        <tr><td>Carga: fechas como 45291</td><td>Falta <b>Formato de fecha y hora: ISO 8601</b> en Leer Excel.</td></tr>
+        <tr><td>Carga: DNI sin el 0 inicial</td><td>Usa la expresión de NroDoc de la tabla de la parte 4.5, que completa con ceros hasta 8 dígitos (solo para DNI).</td></tr>
+        <tr><td>Quieres ver qué pasó en una ejecución</td><td>Power Automate → Mis flujos → el flujo → <b>Historial de ejecuciones de 28 días</b> → abre la ejecución: cada acción muestra sus entradas y salidas, y la que falló aparece en rojo con el mensaje.</td></tr>
+      </tbody></table></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const IT = "items('Aplicar_a_cada_uno')";
+const col = c => `${IT}?['${c}']`;
+const FX = {
+flFiltro:`FSObjType eq 1 and startswith(FileLeafRef,'@{triggerBody()['text']}')`,
+flFiltrar:`@or(startsWith(item()?['{Name}'], concat(triggerBody()['text'], ' ')), startsWith(item()?['{Name}'], concat(triggerBody()['text'], '-')))`,
+flCantidad:`length(body('Filtrar'))`,
+flSitio:`if(equals(triggerBody()['text'], 'Pensión (expediente)'), 'https://TU-EMPRESA.sharepoint.com/sites/SITIO-PENSION', 'https://TU-EMPRESA.sharepoint.com/sites/SITIO-SCTR')`,
+flRuta:`if(equals(triggerBody()['text'], 'Pensión (expediente)'), concat('/', triggerBody()['text_1']), concat('/Shared Documents/', triggerBody()['text_1']))`,
+flNombre:`concat(triggerBody()['number'], ' - ', triggerBody()['file']['name'])`,
+flContenido:`triggerBody()['file']['contentBytes']`,
+flExiste:`length(body('Buscar_siniestro')?['value'])`,
+flIdExistente:`first(body('Buscar_siniestro')?['value'])?['ID']`,
+flFilas:`length(body('Leer_Excel')?['value'])`,
+pfPruebaExp:`Set(varPrueba, BuscarExpedienteApp.Run("20260411"))`,
+pfPruebaExpLbl:`varPrueba.estado & " · " & varPrueba.coincidencias & " carpeta(s) · " & varPrueba.ruta`,
+pfPruebaSubir:`ClearCollect(colPrueba, ForAll(attFormato1.Attachments As a,
+    SubirDocumento.Run(0, "SCTR (Salud)", "PRUEBA - APP", "Otro",
+        {file: {contentBytes: a.Value, name: a.Name}})))`,
+pfPruebaSubirLbl:`CountRows(colPrueba) & " archivo(s) · " & First(colPrueba).link`
+};
+// Solo las fórmulas de Power Apps cambian con el separador
+const PFX = k => k.startsWith("pf");
+
+const ROWS = {
+tbExpSalidas: [
+ ["estado","Texto",[{fl:`if(equals(outputs('Cantidad'), 0), 'No encontrado', if(equals(outputs('Cantidad'), 1), 'Encontrado', 'Varias carpetas (se usó la más reciente)'))`}]],
+ ["ruta","Texto",[{fl:`if(equals(outputs('Cantidad'), 0), '', first(body('Filtrar'))?['{FullPath}'])`}]],
+ ["link","Texto",[{fl:`if(equals(outputs('Cantidad'), 0), '', first(body('Filtrar'))?['{Link}'])`}]],
+ ["coincidencias","Número",[{fl:`outputs('Cantidad')`}]],
+ ["modificada","Texto",[{fl:`if(equals(outputs('Cantidad'), 0), '', formatDateTime(first(body('Filtrar'))?['Modified'], 'dd/MM/yyyy'))`}]]
+],
+tbSubirSalidas: [
+ ["link","Texto",[{fl:`concat(outputs('SitioURL'), body('Crear_archivo')?['Path'])`}]],
+ ["ruta","Texto",[{fl:`body('Crear_archivo')?['Path']`}]],
+ ["carpeta","Texto",[{fl:`concat(outputs('SitioURL'), outputs('RutaCarpeta'))`}]],
+ ["nombre","Texto",[{fl:`concat(triggerBody()['number'], ' - ', triggerBody()['file']['name'])`}]],
+ ["tipo","Texto",[{fl:`triggerBody()['text_2']`}]]
+],
+tbMapeo: [
+ ["Título",["Rayo → columna del N.º de siniestro del Excel"]],
+ ["N.º de póliza",["Rayo → columna de la póliza"]],
+ ["RUC de la empresa",[{fl:`string(${col("RUC")})`}]],
+ ["Empresa",["Rayo → columna de la razón social"]],
+ ["Tipo de documento",["Elige ",{t:"DNI"},", o un valor personalizado con la columna del tipo si el Excel la trae"]],
+ ["Número de documento",[{fl:`if(less(length(string(${col("NRO DOCUMENTO")})), 8), concat(substring('00000000', 0, sub(8, length(string(${col("NRO DOCUMENTO")})))), string(${col("NRO DOCUMENTO")})), string(${col("NRO DOCUMENTO")}))`}]],
+ ["Apellido paterno · materno · Nombres",["Rayo → cada columna del Excel"]],
+ ["Apellidos y nombres",[{fl:`trim(concat(${col("APELLIDO PATERNO")}, ' ', ${col("APELLIDO MATERNO")}, ' ', ${col("NOMBRES")}))`}]],
+ ["Fecha del siniestro",[{fl:`if(empty(${col("FECHA SINIESTRO")}), null, ${col("FECHA SINIESTRO")})`}]],
+ ["Causa · Consecuencia",["Rayo → cada columna del Excel"]],
+ ["Menoscabo (%)",[{fl:`if(empty(${col("MENOSCABO")}), null, float(${col("MENOSCABO")}))`}]],
+ ["Fecha de carga",[{fl:`utcNow()`}]],
+ ["Archivo de origen",["Rayo → ",{t:"Nombre de archivo con extensión"}," (del desencadenador)"]]
+]
+};
+
+// ---------- separador ----------
+let ES = false;
+try { ES = localStorage.getItem("fl-sep") === "es"; } catch (e) {}
+function conv(s){
+  if (!ES) return s;
+  let out = "", inStr = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === '"') { inStr = !inStr; out += c; continue; }
+    if (inStr) { out += c; continue; }
+    if (c === ";") out += ";;";
+    else if (c === ",") out += ";";
+    else out += c;
+  }
+  return out;
+}
+const fxText = key => PFX(key) ? conv(FX[key] || "") : (FX[key] || "");
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function renderTables(){
+  for (const id in ROWS) {
+    const tb = document.getElementById(id); if (!tb) continue;
+    tb.innerHTML = ROWS[id].map((r, ri) => {
+      const val = r[r.length - 1].map((v, vi) => {
+        if (typeof v === "string") return esc(v);
+        if (v.t) return `<code>${esc(v.t)}</code>`;
+        const key = "k_" + id + "_" + ri + "_" + vi;
+        FX[key] = v.fl;
+        return `<span class="fxcell"><code>${esc(v.fl)}</code><button class="cp" data-copy="${key}">Copiar</button></span>`;
+      }).join("");
+      return `<tr>${r.slice(0, -1).map(c => `<td>${esc(c)}</td>`).join("")}<td>${val}</td></tr>`;
+    }).join("");
+  }
+}
+function renderFx(){
+  document.querySelectorAll("[data-fx]").forEach(el => { el.textContent = fxText(el.dataset.fx); });
+  document.getElementById("sepEn").setAttribute("aria-pressed", String(!ES));
+  document.getElementById("sepEs").setAttribute("aria-pressed", String(ES));
+}
+document.getElementById("sepEn").onclick = () => { ES = false; try { localStorage.setItem("fl-sep", "en"); } catch (e) {} renderFx(); };
+document.getElementById("sepEs").onclick = () => { ES = true; try { localStorage.setItem("fl-sep", "es"); } catch (e) {} renderFx(); };
+
+document.addEventListener("click", e => {
+  const b = e.target.closest(".cp"); if (!b) return;
+  const text = fxText(b.dataset.copy);
+  const done = () => { const o = b.textContent; b.textContent = "Copiado"; b.classList.add("ok"); setTimeout(() => { b.textContent = o; b.classList.remove("ok"); }, 1200); };
+  const fallback = () => { const pre = b.closest(".codebox")?.querySelector("pre") || b.parentElement.querySelector("code"); if (pre) { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } };
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback(); } catch (err) { fallback(); }
+});
+
+const KEY = "fl-done-v1";
+let st = {};
+try { st = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { st = {}; }
+const steps = [...document.querySelectorAll("section.step")];
+function renderToc(){
+  document.getElementById("toc").innerHTML = steps.map(s => {
+    const n = s.dataset.step, h = s.querySelector("h2").textContent, lab = s.querySelector(".num").textContent;
+    return `<a href="#p${n}" class="${st[n] ? "done" : ""}"><span class="n">${st[n] ? "✓" : esc(lab)}</span><span>${esc(h)}</span></a>`;
+  }).join("");
+  const k = steps.filter(s => st[s.dataset.step]).length;
+  document.getElementById("avTxt").textContent = `${k} de ${steps.length} partes`;
+  document.getElementById("avBar").style.width = Math.round(k * 100 / steps.length) + "%";
+  steps.forEach(s => s.classList.toggle("done", !!st[s.dataset.step]));
+}
+document.querySelectorAll("[data-done]").forEach(c => {
+  c.checked = !!st[c.dataset.done];
+  c.addEventListener("change", () => { if (c.checked) st[c.dataset.done] = 1; else delete st[c.dataset.done]; try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} renderToc(); });
+});
+renderTables(); renderFx(); renderToc();
+</script>
+
+</body></html>
